@@ -1,0 +1,79 @@
+1.搭建环境
+	1.1 导入开发包
+		mysql驱动: mysql-connector-java-5.0.8-bin.jar
+		c3p0连接池: c3p0-0.9.2-pre1.jar
+				   mchange-commons-0.2.jar
+		dbutils: commons-dbutils-1.2.jar
+		BeanUtils: commons-beanutils-1.8.0.jar
+				   commons-logging-1.1.1.jar
+		
+	1.2 创建库和表
+create database day19 character set utf8 collate utf8_general_ci;
+
+use day19;
+
+create table privilege(
+	id varchar(40) primary key,
+	name varchar(40) unique not null,
+	description varchar(200)
+)character set utf8 collate utf8_general_ci;
+
+create table role(
+	id varchar(40) primary key,
+	name varchar(40) unique not null,
+	description varchar(200)
+)character set utf8 collate utf8_general_ci;
+
+create table user(
+	id varchar(40) primary key,
+	username varchar(40) unique not null,
+	password varchar(40) not null
+)character set utf8 collate utf8_general_ci;
+
+create table role_privilege(
+	role_id varchar(40),
+	privilege_id varchar(40),
+	primary key(role_id,privilege_id),
+	constraint role_id_FK foreign key(role_id) references role(id),
+	constraint privilege_id_FK foreign key(privilege_id) references privilege(id)
+)character set utf8 collate utf8_general_ci;
+
+create table user_role(
+	user_id varchar(40),
+	role_id varchar(40),
+	primary key(user_id,role_id),
+	constraint user_id_FK foreign key(user_id) references user(id),
+	constraint role_id_FK1 foreign key(role_id) references role(id)
+)character set utf8 collate utf8_general_ci;
+
+
+
+
+2.开发实体：
+public class User {
+	private String id;
+	private String username;
+	private String password;
+	private Set<Role> roles = new HashSet<Role>();
+}
+
+public class Role {
+	private String id;
+	private String name;
+	private String description;
+	private Set<Privilege> privileges = new HashSet<Privilege>();
+}
+
+public class Privilege {
+	private String id;
+	private String name;
+	private String description;
+}
+
+
+3.开发dao。
+
+index.jsp 是网站后台管理：管理用户、角色、权限等。
+1.jsp 是网站前台资源首页。
+
+
